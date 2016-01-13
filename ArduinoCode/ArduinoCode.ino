@@ -1,25 +1,45 @@
 #define trigPin 5
 #define echoPin 12
+#define servoPin 11
+#include <Servo.h>
 
 unsigned long pulseTime;
+
+Servo rotator;
+const unsigned long maxPulseTime = 20000;
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);//We have to stop using 9600 as default, it's slow.
+  pinMode(servoPin, OUTPUT);
   pinMode(trigPin, OUTPUT);
   pinMode(echoPin, INPUT);
+  rotator.attach(servoPin);
 }
 
 void loop() {
   // put your main code here, to run repeatedly:
-  digitalWrite(trigPin,HIGH);
-  delayMicroseconds(10);      //Datasheet says ATLEAT 10microseconds
-  digitalWrite(trigPin,LOW);
-
-  pulseTime = pulseIn(echoPin, HIGH, 19000);
-  Serial.print(pulseTime);
-  Serial.print('\n');
-  delay(30);
+  
+  for(int rotation = 0;rotation<360;rotation++){
+    if(rotation<=180){
+      rotator.write(rotation);
+    }else{
+      rotator.write((360-rotation));
+    }
+    delayMicroseconds(10);
+    digitalWrite(trigPin,HIGH);
+    delayMicroseconds(10);      //Datasheet says ATLEAT 10microseconds
+    digitalWrite(trigPin,LOW);
+    pulseTime = pulseIn(echoPin, HIGH, maxPulseTime);
+    if(pulseTime==0){
+      pulseTime=maxPulseTime;
+    }
+    Serial.print(rotation);
+    Serial.print(",");
+    Serial.print(pulseTime);
+    Serial.print('\n');
+    delay(15);
+  }
 }
 
 //Datasheet:  
