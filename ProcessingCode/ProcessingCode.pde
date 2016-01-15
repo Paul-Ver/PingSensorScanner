@@ -9,8 +9,10 @@ int rotation = 0;
 int lenght = 0;
 int[] lenghts = new int[180];
 
+int maxPulseTime = 150;
+
 void setup() {
-  size(720,640);
+  size(720,360);
   surface.setResizable(true);
   ellipseMode(RADIUS);
   ellipseMode(CENTER);
@@ -37,7 +39,7 @@ void draw() {
   stroke(0,255,0);
   strokeWeight(1);
   for(int i : lenghts){//Draw history lines
-    line(0,0,-i/7*cos(radians(j)),-i/7*sin(radians(j)));
+    line(0,0,-(i*(width/maxPulseTime)/2)*cos(radians(j)),-(i*(height/maxPulseTime))*sin(radians(j)));
     j++;
   }
   popMatrix();
@@ -72,10 +74,11 @@ void drawHud(){
   line(0,0,0,-height);//middle
   line(0,0,width/2,-height);//Right
   noFill();
-  ellipse(0,0,width,height);
-  ellipse(0,0,width/2,height/2);
-  ellipse(0,0,width*1.5,height*1.5);
-  ellipse(0,0,width*2,height*2);
+  
+  arc(0,0, width/2, height, PI, PI+PI);
+  
+  arc(0,0, width, height*2, PI, PI+PI);
+  
   
   text("Rotation: " + rotation + " Distance: " + lenght, -width/2+10,-16);
 }

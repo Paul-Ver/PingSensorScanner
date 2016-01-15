@@ -6,7 +6,8 @@
 unsigned long pulseTime;
 
 Servo rotator;
-const unsigned long maxPulseTime = 20000;
+const unsigned long maxPulseTime = 150;
+const unsigned int dly = 30;
 
 void setup() {
   // put your setup code here, to run once:
@@ -19,26 +20,28 @@ void setup() {
 
 void loop() {
   // put your main code here, to run repeatedly:
-  
+
   for(int rotation = 0;rotation<360;rotation++){
+      //rotation = 90;
+      //rotator.detach();
     if(rotation<=180){
       rotator.write(rotation);
     }else{
       rotator.write((360-rotation));
     }
-    delayMicroseconds(10);
+    delay(dly);
     digitalWrite(trigPin,HIGH);
     delayMicroseconds(10);      //Datasheet says ATLEAT 10microseconds
     digitalWrite(trigPin,LOW);
-    pulseTime = pulseIn(echoPin, HIGH, maxPulseTime);
+    pulseTime = pulseIn(echoPin, HIGH, maxPulseTime*58);//max pulse time is 38ms (datasheet)
     if(pulseTime==0){
-      pulseTime=maxPulseTime;
+      pulseTime=maxPulseTime*58;//pulsetime /58 = cm
     }
     Serial.print(rotation);
     Serial.print(",");
-    Serial.print(pulseTime);
+    Serial.print(pulseTime/58);
     Serial.print('\n');
-    delay(15);
+    //delay(dly);
   }
 }
 
